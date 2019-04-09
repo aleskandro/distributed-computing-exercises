@@ -1,0 +1,12 @@
+version: '3'
+services:
+    glassfish:
+        image: glassfish:4.0-jdk7
+        volumes:
+            - ./CounterRedisDocker-ear/target/CounterRedisDocker-ear-1.0-SNAPSHOT.ear:/usr/local/glassfish4/glassfish/domains/domain1/autodeploy/CounterRedisDocker.ear
+        ports:
+            - 8081:8080
+        links:
+            - redis
+    redis:
+        image: redis

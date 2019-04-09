@@ -1,0 +1,19 @@
+version: '3'
+services:
+    counter:
+        build: pythonapp/
+        links:
+            - redis
+        volumes:
+            - ./pythonapp:/app
+    frontend:
+        build: frontend/
+        ports:
+            - "8080:80"
+        volumes:
+            - ./frontend/src:/webapp
+        links:
+            - counter
+    redis:
+        image: redis:5-alpine
+

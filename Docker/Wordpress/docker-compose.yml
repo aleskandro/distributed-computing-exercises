@@ -1,0 +1,33 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb
+    restart: on-failure:5
+    environment:
+      MYSQL_ROOT_PASSWORD: myc00lp@ssw0rd
+    volumes:
+        - mariadb:/var/lib/mysql
+  wordpress:
+    image: wordpress
+    volumes:
+      - ./public:/var/www/html
+    ports:
+      - "8080:80"
+    restart: on-failure:5
+    links:
+      - mariadb:mysql
+    environment:
+      WORDPRESS_DB_PASSWORD: myc00lp@ssw0rd
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - 8082:80
+    links:
+      - mariadb:mysql
+    environment:
+      PMA_USER: root
+      PMA_PASSWORD: myc00lp@ssw0rd
+      PMA_HOST: mysql
+
+volumes:
+    mariadb:
