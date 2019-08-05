@@ -1,6 +1,6 @@
-Start the minikube VM
+Start/Create the minikube VM
 
-```minikube start --vm-driver=kvm2```
+```minikube start --memory=4096 --vm-driver=kvm2```
 
 Create the server.js
 

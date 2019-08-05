@@ -8,24 +8,19 @@ Create the dockerfile
 
 Build the docker image
 
-``` docker build -t minikube-first:v1 . ```
+``` docker build -t minikube-second:v1 . ```
 
-``` kubectl create deployment hello-node --image=minikube-first:v1 ```
+To deploy:
 
-deployment.apps/hello-node created
-seraph minikube-first # kubectl get deployments
-NAME         READY   UP-TO-DATE   AVAILABLE   AGE
-hello-node   1/1     1            1           7s
+```
+    kubectl apply -f deployment.yml
+    kubectl apply -f service.yml
+```
 
-kubectl get pods
-NAME                          READY   STATUS    RESTARTS   AGE
-hello-node-5868dd5747-qr8nb   1/1     Running   0          68s
+To "un"-deploy:
 
-kubectl expose deployment hello-node --type=LoadBalancer --port=8080
+```
+    kubectl delete -f deployment.yml
+    kubectl delete -f deployment.yml
 
-minikube service hello-node
-
-kubectl delete service hello-node
-service "hello-node" deleted
-seraph minikube-first # kubectl delete deployment hello-node
-deployment.extensions "hello-node" deleted
+```

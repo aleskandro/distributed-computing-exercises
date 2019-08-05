@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: webapp
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 8080
       protocol: TCP

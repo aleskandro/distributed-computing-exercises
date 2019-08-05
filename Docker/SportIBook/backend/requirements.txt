@@ -1,0 +1,6 @@
+Django>=2.0,<3.0
+mysqlclient
+djangorestframework
+Pillow
+uwsgi
+dj-static

@@ -11,5 +11,5 @@ spec:
     protocol: TCP
     name: http
   selector:
-    app: hello-kubernetes
+    app: hello-kubernetes-pods
 
