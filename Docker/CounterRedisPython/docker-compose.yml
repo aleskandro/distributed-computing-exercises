@@ -1,13 +1,11 @@
 version: '3'
 services:
     counter:
-        build: .
+        image: ykn18/pythoncounter1
         links:
             - redis
         ports:
             - "8080:5000"
-        volumes:
-            - ./:/app
     redis:
         image: redis:5-alpine
 
