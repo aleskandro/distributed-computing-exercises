@@ -1,0 +1,10 @@
+version: '3'
+services:
+    counter:
+        image: angelo1996/distributed-computing-exercises:counter
+        links:
+            - redis
+        ports:
+            - "8080:5000"
+    redis:
+        image: redis:5-alpine
