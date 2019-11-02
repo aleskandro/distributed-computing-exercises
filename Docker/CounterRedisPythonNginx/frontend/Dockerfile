@@ -1,5 +1,5 @@
 FROM nginx:1-alpine
-COPY . .
+COPY etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 RUN mkdir /webapp
 WORKDIR /webapp
-
+COPY src ./src
