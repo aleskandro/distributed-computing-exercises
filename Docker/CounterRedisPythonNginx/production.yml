@@ -7,10 +7,12 @@ services:
             - redis
     frontend:
         image: angelo1996/distributed-computing-exercises:frontend
+        restart: always
         ports:
             - "8080:80"
         links:
             - counter
     redis:
         image: redis:5-alpine
+        restart: always
 
