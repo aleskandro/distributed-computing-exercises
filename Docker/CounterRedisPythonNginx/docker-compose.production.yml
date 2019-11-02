@@ -1,0 +1,15 @@
+version: '3'
+services:
+    counter:
+        image: alexlocastro/distributed-computing-exercises:counter1
+        links:
+            - redis
+    frontend:
+        image: alexlocastro/distributed-computing-exercises:frontend1
+        ports:
+            - "8080:80"
+        links:
+            - counter
+    redis:
+        image: redis:5-alpine
+
