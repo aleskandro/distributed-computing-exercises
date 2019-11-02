@@ -1,0 +1,16 @@
+version: '3'
+services:
+    counter:
+        image: angelo1996/distributed-computing-exercises:counter2
+        restart: always
+        links:
+            - redis
+    frontend:
+        image: angelo1996/distributed-computing-exercises:frontend
+        ports:
+            - "8080:80"
+        links:
+            - counter
+    redis:
+        image: redis:5-alpine
+

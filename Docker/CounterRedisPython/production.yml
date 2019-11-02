@@ -2,6 +2,7 @@ version: '3'
 services:
     counter:
         image: angelo1996/distributed-computing-exercises:counter
+        restart: always
         links:
             - redis
         ports:
