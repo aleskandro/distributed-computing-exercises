@@ -1,0 +1,17 @@
+version: '3'
+services:
+  counter:
+    image: cannizzaromic/counter1
+    links:
+      - redis
+    ports:
+      - "7070:5000"
+    deploy:
+      restart_policy:
+            condition: always
+  redis:
+    image: redis:5-alpine
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: always
