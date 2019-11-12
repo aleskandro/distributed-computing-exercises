@@ -1,0 +1,15 @@
+version: '3'
+services:
+    counter:
+        image: m1c0l/dsbd_exercise2:pythonapp
+        links:
+            - redis
+    frontend:
+        image: m1c0l/dsbd_exercise2:frontend
+        ports:
+            - "8080:80"
+        links:
+            - counter
+    redis:
+        image: redis:5-alpine
+
