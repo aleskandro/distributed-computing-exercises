@@ -1,0 +1,11 @@
+version: '3'
+services:
+    counter:
+        image: m1c0l/dsbd_exercise1:latest
+        restart: unless-stopped
+        links:
+            - redis
+        ports:
+            - "8081:5000"
+    redis:
+        image: redis:5-alpine
