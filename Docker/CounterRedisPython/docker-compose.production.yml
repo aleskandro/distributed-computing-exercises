@@ -1,17 +1,12 @@
 version: '3'
-#definizione dei servizi, counter e redis
 services:
     counter:
-        #usa un'immagine 
-        image: alexlocastro/distributed-computing-exercises:counter
+        image: aleskandro/pycounter:latest
         restart: always
-        #collega il container con un altro servizio
         links:
             - redis
         ports:
-            #(host port: container port) -> port mapping
             - "9090:5000"
     redis:
-        #usa l'immagine di redis
         image: redis:5-alpine
 

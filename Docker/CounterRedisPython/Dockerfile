@@ -1,13 +1,7 @@
-#inizializza una una fase di costruzione e setta un'immagine di base per le istruzioni seguenti
 FROM python:3
-#setta una working directory per i comandi RUN,CMD, COPY ,ADD 
 WORKDIR /app
-#setta una variabile d'ambiente
 ENV FLASK_APP=counter.py
 ENV FLASK_DEBUG=1
-#copia file o directory nel filesystem del conteiner
 COPY requirements.txt ./
-#eseguirà il comando on top of the current image e committerà il risultato
 RUN pip install --no-cache-dir -r requirements.txt
-#ci può essere solo un comando CMD, fornisce l'azione per l'esecuzione del container
 CMD ["python", "-m", "flask", "run", "--host", "0.0.0.0"]
