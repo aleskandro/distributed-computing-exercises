@@ -1,0 +1,15 @@
+version: '3'
+services:
+    counter:
+        image: aleskandro/pycounternginx:latest
+        links:
+            - redis
+    frontend:
+        image: alexlocastro/pycounternginxapigw:latest
+        ports:
+            - "8080:80"
+        links:
+            - counter
+    redis:
+        image: redis:5-alpine
+
