@@ -4,8 +4,8 @@ FROM python:3
 WORKDIR /app
 #setta una variabile d'ambiente
 ENV FLASK_APP=counter.py
-ENV FLASK_DEBUG=1
 #copia file o directory nel filesystem del conteiner
+COPY counter.py ./
 COPY requirements.txt ./
 #eseguirà il comando on top of the current image e committerà il risultato
 RUN pip install --no-cache-dir -r requirements.txt
