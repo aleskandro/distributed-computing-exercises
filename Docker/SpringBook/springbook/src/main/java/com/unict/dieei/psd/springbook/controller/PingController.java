@@ -8,7 +8,7 @@ public class PingController {
 
     @GetMapping("/ping")
     public String ping() {
-        return "pong";
+        return "pong34";
     }
 
 }
