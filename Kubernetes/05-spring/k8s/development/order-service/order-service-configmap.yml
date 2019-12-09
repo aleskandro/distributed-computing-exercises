@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  KAFKA_ADDRESS: kafkaa:9092
+  KAFKA_GROUP_ID: order-service-group
+  KAFKA_MAIN_TOPIC: main-topic
+  MONGODB_HOSTNAME: order-service-db
+  MONGODB_PORT: "27017"
+kind: ConfigMap
+metadata:
+  name: order-service-env-file

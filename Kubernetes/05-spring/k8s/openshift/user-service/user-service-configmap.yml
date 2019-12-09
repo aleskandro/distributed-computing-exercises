@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  KAFKA_ADDRESS: kafkaa:9092
+  KAFKA_GROUP_ID: user-service-group
+  KAFKA_MAIN_TOPIC: main-topic
+  MONGODB_HOSTNAME: user-service-db
+  MONGODB_PORT: "27017"
+kind: ConfigMap
+metadata:
+  name: user-service-env-file

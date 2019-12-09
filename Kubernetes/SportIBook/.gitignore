@@ -1,5 +1,0 @@
-__pycache__
-.*.sw[op]
-backend/media
-backend/static
-node_modules
