@@ -37,19 +37,7 @@ http://staging.sportibook.localhost:8080 --> Frontend
 
 ## Production
 
-/etc/hosts
-
-
-```
-127.0.0.1 api.sportibook.localhost sportibook.localhost
-
-```
-
-### Services
-
-http://api.sportibook.localhost:9080 --> Django Admin
-http://sportibook.localhost:9080 --> Frontend
-
+See k8s/production/README.md
 
 ## Restore DB dump
 

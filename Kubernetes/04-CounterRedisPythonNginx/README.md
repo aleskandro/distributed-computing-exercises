@@ -2,7 +2,7 @@ docker build -t pycounter-stateless:v1 pythonapp/
 docker build -t pycounter-redis:v1 redis/
 docker build -t pycounter-frontend:v1 frontend/
 
-kubectl apply -f deployment
+kubectl apply -f k8s
 
 minikube service pycounter-frontend --url
 
