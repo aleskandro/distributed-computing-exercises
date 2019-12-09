@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  MYSQL_DATABASE: isportbook_production
+  MYSQL_ROOT_HOST: '%'
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"sportibook-db-env-file","creationTimestamp":null},"data":{"MYSQL_DATABASE":"isportbook_production","MYSQL_ROOT_HOST":"%"}}
+  creationTimestamp: "2019-12-09T13:08:43Z"
+  name: sportibook-db-env-file
+  namespace: default
+  resourceVersion: "15195"
+  selfLink: /api/v1/namespaces/default/configmaps/sportibook-db-env-file
+  uid: 548fb3df-1d53-491e-82f0-1b2d09321118

@@ -1,0 +1,201 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sportibook-backend
+spec:
+  ports:
+    - port: 8000
+  selector:
+    app: sportibook-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sportibook-db
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: sportibook-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sportibook-frontend
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: sportibook-frontend
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sportibook-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type"
+spec:
+  rules:
+  - host: api.sportibook.localhost
+    http:
+      paths:
+      - backend:
+          serviceName: sportibook-backend
+          servicePort: 8000
+  - host: sportibook.localhost
+    http:
+      paths:
+      - backend:
+          serviceName: sportibook-frontend
+          servicePort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sportibook-db
+spec:
+  selector:
+      matchLabels:
+          app: sportibook-db
+  template:
+    metadata:
+      labels:
+        app: sportibook-db
+    spec:
+      containers:
+      - name: sportibook-db
+        image: sportibook-db:v1
+        ports:
+        - containerPort: 3306
+        envFrom:
+        - configMapRef:
+            name: sportibook-db-env-file
+        - secretRef:
+            name: sportibook-db-secret-file
+        volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: sportibook-mariadb-volume
+      volumes: # TODO volume claims
+      - name: sportibook-mariadb-volume
+        hostPath:
+            path: /sportibook-mariadb-volume
+            type: DirectoryOrCreate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sportibook-backend
+spec:
+  selector:
+      matchLabels:
+          app: sportibook-backend
+  template:
+    metadata:
+      labels:
+        app: sportibook-backend
+    spec:
+      containers:
+      - name: sportibook-backend
+        image: sportibook-backend:v1
+        command: ["uwsgi", "/etc/uwsgi.ini"]
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: sportibook-backend-env-file
+        - secretRef:
+            name: sportibook-backend-secret-file
+        volumeMounts:
+            - mountPath: /code/media
+              name: sportibook-media-volume
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+
+      volumes: # TODO volume claims
+      - name: sportibook-media-volume
+        hostPath:
+            path: /sportibook-media-volume
+            type: DirectoryOrCreate
+      initContainers:
+      - name: waitdb
+        image: imega/mysql-client
+        command: ["sh", "-c", "until mysqladmin -u$(DB_USER) -p$(DB_PASSWORD) -h$(DB_HOST) status >/dev/null 2>&1 </dev/null; do echo waiting for db; sleep 2; done"]
+        envFrom:
+        - configMapRef:
+            name: sportibook-backend-env-file
+        - secretRef:
+            name: sportibook-backend-secret-file
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sportibook-frontend
+spec:
+  selector:
+      matchLabels:
+          app: sportibook-frontend
+  template:
+    metadata:
+      labels:
+        app: sportibook-frontend
+    spec:
+      containers:
+      - name: sportibook-frontend
+        image: sportibook-frontend:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: NGINX_PORT
+          value: "80"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sportibook-migrations
+spec:
+  template:
+    spec:
+      containers:
+      - name: sportibook-migrate
+        image: sportibook-backend:v1
+        command: ["python3",  "manage.py", "migrate"]
+        envFrom:
+        - configMapRef:
+            name: sportibook-backend-env-file
+        - secretRef:
+            name: sportibook-backend-secret-file
+      initContainers:
+      - name: waitdb
+        image: imega/mysql-client
+        command: ["sh", "-c", "until mysqladmin -u$(DB_USER) -p$(DB_PASSWORD) -h$(DB_HOST) status >/dev/null 2>&1 </dev/null; do echo waiting for db; sleep 2; done"]
+        envFrom:
+        - configMapRef:
+            name: sportibook-backend-env-file
+        - secretRef:
+            name: sportibook-backend-secret-file
+      - name: createdb
+        image: imega/mysql-client
+        command: ["mysql"]
+        args: ["--host=$(DB_HOST)", "--user=$(DB_USER)", "--password=$(DB_PASSWORD)", "--port=$(DB_PORT)", "--execute=CREATE DATABASE IF NOT EXISTS $(DB_NAME)"]
+        envFrom:
+        - configMapRef:
+            name: sportibook-backend-env-file
+        - secretRef:
+            name: sportibook-backend-secret-file
+      restartPolicy: Never
+  backoffLimit: 4
+

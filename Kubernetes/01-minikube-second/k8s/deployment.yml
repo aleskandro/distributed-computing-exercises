@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-node
+spec:
+  replicas: 3
+  selector:
+      matchLabels:
+          app: hello-kubernetes-pods
+  template:
+    metadata:
+      labels:
+        app: hello-kubernetes-pods
+    spec:
+      containers:
+      - name: minikube-second
+        image: minikube-second:v1
+        ports:
+          - containerPort: 8080
+        imagePullPolicy: Never
