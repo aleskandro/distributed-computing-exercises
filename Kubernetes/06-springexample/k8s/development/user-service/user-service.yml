@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-db
+spec:
+  ports:
+    - port: 27017
+  selector:
+    app: user-service-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: user-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-external
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+    app: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-db
+spec:
+  selector:
+    matchLabels:
+      app: user-service-db
+  template:
+    metadata:
+      labels:
+        app: user-service-db
+    spec:
+      containers:
+      - name: user-service-db
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+        envFrom:
+        - configMapRef:
+            name: user-service-db-env-file
+        - secretRef:
+            name: user-service-db-secret-file
+        volumeMounts:
+            - mountPath: /data/db
+              name: user-service-db-volume
+      volumes:
+      - name: user-service-db-volume
+        hostPath:
+            path: /user-service-db-volume
+            type: DirectoryOrCreate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: user-service:v1
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: user-service-db-env-file
+        - configMapRef:
+            name: user-service-env-file
+        - secretRef:
+            name: user-service-db-secret-file
+

@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  KAFKA_ADDRESS: kafkaa:9092
+  KAFKA_GROUP_ID: user-service-group
+  KAFKA_MAIN_TOPIC: main-topic
+  MONGODB_HOSTNAME: user-service-db
+  MONGODB_PORT: "27017"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"user-service-env-file","creationTimestamp":null},"data":{"KAFKA_ADDRESS":"kafkaa:9092","KAFKA_GROUP_ID":"user-service-group","KAFKA_MAIN_TOPIC":"main-topic","MONGODB_HOSTNAME":"user-service-db","MONGODB_PORT":"27017"}}
+  creationTimestamp: "2019-12-11T11:57:24Z"
+  name: user-service-env-file
+  namespace: default
+  resourceVersion: "154528"
+  selfLink: /api/v1/namespaces/default/configmaps/user-service-env-file
+  uid: ab8beada-81e1-49c3-aaa4-507d4fec455e

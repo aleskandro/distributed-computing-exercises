@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: spring-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2" # Note1 at the end of the file
+spec:
+  rules:
+  - host: springexample.localhost
+    http:
+      paths:
+      - path: /users(/|$)(.*) # Note1 at the end of the file
+        backend:
+          serviceName: user-service
+          servicePort: 8080
+      - path: /orders(/|$)(.*) # Note1 at the end of the file
+        backend:
+          serviceName: order-service
+          servicePort: 8080
+
+# Note1:  See https://kubernetes.github.io/ingress-nginx/examples/rewrite/

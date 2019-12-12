@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  KAFKA_ADDRESS: kafkaa:9092
+  KAFKA_GROUP_ID: order-service-group
+  KAFKA_MAIN_TOPIC: main-topic
+  MONGODB_HOSTNAME: order-service-db
+  MONGODB_PORT: "27017"
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"order-service-env-file","creationTimestamp":null},"data":{"KAFKA_ADDRESS":"kafkaa:9092","KAFKA_GROUP_ID":"order-service-group","KAFKA_MAIN_TOPIC":"main-topic","MONGODB_HOSTNAME":"order-service-db","MONGODB_PORT":"27017"}}
+  creationTimestamp: "2019-12-11T11:57:25Z"
+  name: order-service-env-file
+  namespace: default
+  resourceVersion: "154532"
+  selfLink: /api/v1/namespaces/default/configmaps/order-service-env-file
+  uid: 4aa2e15a-32ba-4ba1-a3b4-128062f2e038
