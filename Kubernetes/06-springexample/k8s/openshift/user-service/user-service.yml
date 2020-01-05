@@ -1,57 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: user-service-db
-spec:
-  ports:
-    - port: 27017
-  selector:
-    app: user-service-db
----
-apiVersion: v1
-kind: Service
-metadata:
   name: user-service
+  namespace: spring-example-ecommerce-okd
 spec:
   ports:
   - port: 8080
   selector:
     app: user-service
 ---
-apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: user-service-db
-spec:
-  template:
-    metadata:
-      labels:
-        app: user-service-db
-    spec:
-      containers:
-      - name: user-service-db
-        image: mongo:latest
-        ports:
-        - containerPort: 27017
-        envFrom:
-        - configMapRef:
-            name: user-service-db-env-file
-        - secretRef:
-            name: user-service-db-secret-file
-        volumeMounts:
-            - mountPath: /data/db
-              name: user-service-db-volume
-      volumes:
-      - name: user-service-db-volume
-        hostPath:
-            path: /user-service-db-volume
-            type: DirectoryOrCreate
----
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-service
+  namespace: spring-example-ecommerce-okd
 spec:
+  selector:
+      matchLabels:
+          app: user-service
   template:
     metadata:
       labels:
@@ -59,14 +25,59 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: user-service-prod:v1
+        image: docker-registry.default.svc:5000/spring-example-ecommerce-okd/user-service-prod:latest
         ports:
         - containerPort: 8080
-        envFrom:
-        - configMapRef:
-            name: user-service-db-env-file
-        - configMapRef:
-            name: user-service-env-file
-        - secretRef:
-            name: user-service-db-secret-file
-
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: user-service-db
+              key: database-user
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: user-service-db
+              key: database-password
+        - name: MONGO_INITDB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: user-service-db
+              key: database-name
+        - name: KAFKA_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              name: user-service-env-file
+              key: KAFKA_ADDRESS
+        - name: KAFKA_GROUP_ID
+          valueFrom:
+            configMapKeyRef:
+              name: user-service-env-file
+              key: KAFKA_GROUP_ID
+        - name: KAFKA_MAIN_TOPIC
+          valueFrom:
+            configMapKeyRef:
+              name: user-service-env-file
+              key: KAFKA_GROUP_ID
+        - name: MONGODB_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              name: user-service-env-file
+              key: MONGODB_HOSTNAME
+        - name: MONGODB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: user-service-env-file
+              key: MONGODB_PORT
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 3

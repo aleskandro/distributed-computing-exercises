@@ -8,3 +8,4 @@ data:
 kind: ConfigMap
 metadata:
   name: user-service-env-file
+  namespace: spring-example-ecommerce-okd

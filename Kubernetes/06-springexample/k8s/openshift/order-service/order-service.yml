@@ -1,57 +1,34 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: order-service-db
-spec:
-  ports:
-    - port: 27017
-  selector:
-    app: order-service-db
----
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: order-service-db
+#  namespace: spring-example-ecommerce-okd
+#spec:
+#  ports:
+#    - port: 27017
+#  selector:
+#    app: order-service-db
+#---
 apiVersion: v1
 kind: Service
 metadata:
   name: order-service
+  namespace: spring-example-ecommerce-okd
 spec:
   ports:
   - port: 8080
   selector:
     app: order-service
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: order-service-db
-spec:
-  template:
-    metadata:
-      labels:
-        app: order-service-db
-    spec:
-      containers:
-      - name: order-service-db
-        image: mongo:latest
-        ports:
-        - containerPort: 27017
-        envFrom:
-        - configMapRef:
-            name: order-service-db-env-file
-        - secretRef:
-            name: order-service-db-secret-file
-        volumeMounts:
-            - mountPath: /data/db
-              name: order-service-db-volume
-      volumes:
-      - name: order-service-db-volume
-        hostPath:
-            path: /order-service-db-volume
-            type: DirectoryOrCreate
----
-apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
+  namespace: spring-example-ecommerce-okd
   name: order-service
 spec:
+  selector:
+      matchLabels:
+          app: order-service
   template:
     metadata:
       labels:
@@ -59,14 +36,61 @@ spec:
     spec:
       containers:
       - name: order-service
-        image: order-service-prod:v1
+        image: docker-registry.default.svc:5000/spring-example-ecommerce-okd/order-service-prod:latest
         ports:
         - containerPort: 8080
-        envFrom:
-        - configMapRef:
-            name: order-service-db-env-file
-        - configMapRef:
-            name: order-service-env-file
-        - secretRef:
-            name: order-service-db-secret-file
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: order-service-db
+              key: database-user
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: order-service-db
+              key: database-password
+        - name: MONGO_INITDB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: order-service-db
+              key: database-name
+        - name: KAFKA_ADDRESS
+          valueFrom:
+              configMapKeyRef:
+                name: order-service-env-file
+                key: KAFKA_ADDRESS
+        - name: KAFKA_GROUP_ID
+          valueFrom:
+              configMapKeyRef:
+                name: order-service-env-file
+                key: KAFKA_GROUP_ID
+        - name: KAFKA_MAIN_TOPIC
+          valueFrom:
+              configMapKeyRef:
+                name: order-service-env-file
+                key: KAFKA_GROUP_ID
+        - name: MONGODB_HOSTNAME
+          valueFrom:
+              configMapKeyRef:
+                name: order-service-env-file
+                key: MONGODB_HOSTNAME
+        - name: MONGODB_PORT
+          valueFrom:
+              configMapKeyRef:
+                name: order-service-env-file
+                key: MONGODB_PORT        
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 3
+
 

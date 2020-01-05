@@ -2,6 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: spring-example-ecommerce-okd
   name: kafkaa
   labels:
     app: kafkaa
@@ -18,6 +19,7 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: spring-example-ecommerce-okd
   name: kafkaa
 spec:
   selector:
@@ -53,15 +55,20 @@ spec:
             value: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.rmi.port=9999 -Djava.rmi.server.hostname=127.0.0.1"
           - name: JMX_PORT
             value: "9999"
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          fsGroup: 0
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: spring-example-ecommerce-okd
   labels:
     app: zookeeper-service
   name: zookeeper-service
 spec:
-  type: NodePort
   ports:
   - name: zookeeper-port
     port: 2181
@@ -70,14 +77,18 @@ spec:
   selector:
     app: zookeeper
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: spring-example-ecommerce-okd
   labels:
     app: zookeeper
   name: zookeeper
 spec:
   replicas: 1
+  selector:
+      matchLabels:
+          app: zookeeper
   template:
     metadata:
       labels:
@@ -92,5 +103,7 @@ spec:
         env:
         - name: ZOO_MY_ID
           value: "1"
-
-
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000

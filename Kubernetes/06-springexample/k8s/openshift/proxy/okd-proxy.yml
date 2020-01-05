@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: spring-example-ecommerce-okd
+  name: proxy-service-for-routes
+spec:
+  ports:
+    - port: 8081
+  selector:
+    app: proxy-for-routes
+---
+apiVersion: v1
+kind: Route
+metadata:
+  name: expose-proxy
+  namespace: spring-example-ecommerce-okd
+spec:
+  host: spring-example-ecommerce-okd.master.particles.dieei.unict.it
+  to:
+    kind: Service
+    name: proxy-service-for-routes
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-for-routes
+  namespace: spring-example-ecommerce-okd
+spec:
+  selector:
+      matchLabels:
+          app: proxy-for-routes
+  template:
+    metadata:
+      labels:
+        app: proxy-for-routes
+    spec:
+      containers:
+      - name: proxy-for-routes-pod
+        #image: twalter/openshift-nginx:mainline-alpine
+        image:  docker-registry.default.svc:5000/spring-example-ecommerce-okd/proxy-prod:latest
+        ports:
+        - containerPort: 8081
+
