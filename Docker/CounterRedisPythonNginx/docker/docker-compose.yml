@@ -1,18 +1,18 @@
 version: '3'
 services:
   counter:
-    build: pythonapp/
+    build: ../backend
     volumes:
-      - ./pythonapp:/app
+      - ../backend:/app
     environment:
       REDIS_HOST: redis
 
   frontend:
-    build: frontend/
+    build: ../frontend
     ports:
       - 8080:80
     volumes:
-      - ./frontend/src:/webapp
+      - ../frontend/src:/webapp
 
   redis:
     image: redis:5-alpine
