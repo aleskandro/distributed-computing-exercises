@@ -1,8 +1,9 @@
 from flask import Flask
 import redis
+import os
 
 app = Flask(__name__)
-redis = redis.Redis(host="redis")
+redis = redis.Redis(host=os.environ.get('REDIS_HOST', 'redis'))
 
 @app.route("/")
 def count():

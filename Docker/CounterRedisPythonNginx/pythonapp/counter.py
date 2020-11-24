@@ -1,10 +1,12 @@
 from flask import Flask
 import redis
-from fix_nginx import ReverseProxied
+from .fix_nginx import ReverseProxied
+import os
+
 app = Flask(__name__)
 app.wsgi_app = ReverseProxied(app.wsgi_app)
 
-redis = redis.Redis(host="redis")
+redis = redis.Redis(host=os.environ.get('REDIS_HOST', 'redis'))
 
 @app.route("/")
 def count():

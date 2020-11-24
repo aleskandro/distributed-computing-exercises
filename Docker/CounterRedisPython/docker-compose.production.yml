@@ -1,12 +1,12 @@
 version: '3'
 services:
-    counter:
-        image: aleskandro/pycounter:latest
-        restart: always
-        links:
-            - redis
-        ports:
-            - "9090:5000"
-    redis:
-        image: redis:5-alpine
+  counter:
+    image: aleskandro/pycounter:latest
+    restart: always
+    ports:
+      - 9090:5000
+    environment:
+      REDIS_HOST: redis
 
+  redis:
+    image: redis:5-alpine
