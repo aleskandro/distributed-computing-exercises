@@ -1,0 +1,74 @@
+version: '3'
+
+x-common-db-variables: &common-db-variables
+  MYSQL_HOST: ${DB_HOST}
+  MYSQL_USERNAME: ${DB_USER}
+  MYSQL_PASSWORD: ${DB_PASSWORD}
+
+x-common-mysql-variables: &common-mysql-variables
+  MYSQL_DATABASE: ${DB_DATABASE}
+  MYSQL_USER: ${DB_USER}
+  MYSQL_PASSWORD: ${DB_PASSWORD}
+  MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+
+x-common-php-variables: &common-php-variables
+  PMA_HOST: ${DB_HOST}
+  MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+
+x-restart-policy: &common-restart-policy
+  restart: always
+
+x-container: &common-container
+  depends_on:
+    - ${DB_HOST}
+  <<: *common-restart-policy
+  environment:
+    <<: *common-db-variables
+
+
+
+services:
+  mysqldb:
+    image: ${DB_MYSQL_IMAGE}
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      <<: *common-mysql-variables
+    volumes:
+      - mytokenstorage:/var/lib/mysql
+
+  container-1:
+    <<: *common-container
+    build:
+      context: .
+      dockerfile: ${CONTAINER_1_DOCKERFILE}
+    ports:
+      - "2222:2222"
+
+  container-2:
+    <<: *common-container
+    build:
+      context: .
+      dockerfile: ${CONTAINER_2_DOCKERFILE}
+    ports:
+      - "3333:3333"
+
+  container-3:
+    <<: *common-container
+    build:
+      context: .
+      dockerfile: ${CONTAINER_3_DOCKERFILE}
+    ports:
+      - "4444:4444"
+
+  phpmyadmin:
+    depends_on:
+      - ${DB_HOST}
+    image: ${PHPMYADMIN_IMAGE}
+    <<: *common-restart-policy
+    ports:
+      - "8080:80"
+    environment:
+      <<: *common-php-variables
+
+volumes:
+  mytokenstorage:
