@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - mystorage:/var/lib/mysql
+
+  prova:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8086:80
+    restart: always
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: 123456
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - 8082:80
+    environment:
+      PMA_USER: root
+      PMA_PASSWORD: 123456
+      PMA_HOST: mysqldb
+
+volumes:
+  mystorage:
+  #myothervolume:
