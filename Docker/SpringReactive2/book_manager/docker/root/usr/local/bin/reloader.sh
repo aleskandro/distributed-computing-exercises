@@ -22,6 +22,6 @@ watch() {
 }
 
 killer
-/usr/local/bin/wait-mongo.sh
+#/usr/local/bin/wait-mongo.sh
 load
 watch

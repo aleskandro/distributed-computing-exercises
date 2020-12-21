@@ -1,4 +1,4 @@
-package com.unict.dieei.psd.springbook.model;
+package com.unict.dsbd.book_manager.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -8,26 +8,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class Book {
+
     @Id
     private ObjectId _id;
+
     private String name;
     private String author;
-    private Integer pubblicationYear;
+    private Integer publicationYear;
 
     @JsonCreator
-    public Book(String name, String author, Integer pubblicationYear) {
+    public Book(String name, String author, Integer publicationYear) {
         this.name = name;
         this.author = author;
-        this.pubblicationYear = pubblicationYear;
+        this.publicationYear = publicationYear;
     }
-
 
     @JsonGetter("_id")
-    public String get_id_string() {
-        return _id.toHexString();
+    public String getIdString() {
+        return this._id.toHexString();
     }
-
-    // All default getters and setters ...
 
     public ObjectId get_id() {
         return _id;
@@ -53,11 +52,11 @@ public class Book {
         this.author = author;
     }
 
-    public Integer getPubblicationYear() {
-        return pubblicationYear;
+    public Integer getPublicationYear() {
+        return publicationYear;
     }
 
-    public void setPubblicationYear(Integer pubblicationYear) {
-        this.pubblicationYear = pubblicationYear;
+    public void setPublicationYear(Integer publicationYear) {
+        this.publicationYear = publicationYear;
     }
 }
