@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-k8s-service
+  labels:
+    svc: hello-k8
+spec:
+  selector:
+    app: hello-k8s-pods
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-k8s-deploy
+  labels:
+    app: hello-k8s-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-k8s-pods
+  template:
+    metadata:
+      labels:
+        app: hello-k8s-pods
+    spec:
+      containers:
+        - name: node-server
+          image: hello-k8s:latest
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: IfNotPresent

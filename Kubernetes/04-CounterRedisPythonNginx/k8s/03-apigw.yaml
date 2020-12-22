@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pycounter-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Script-Name /backend;
+spec:
+  rules:
+    - host: pycounter.localhost
+      http:
+        paths:
+          - path: /backend
+            pathType: Prefix
+            backend:
+              service:
+                name: pycounter-backend
+                port:
+                  number: 5000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: pycounter-frontend
+                port:
+                  number: 80

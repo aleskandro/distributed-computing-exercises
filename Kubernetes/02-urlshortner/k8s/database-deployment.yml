@@ -13,13 +13,17 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:9.6.5
+        image: postgres:10.6-alpine
         ports:
         - containerPort: 5432
+        envFrom:
+          - configMapRef:
+              name: urlshortner-db-config
+          - secretRef:
+              name: urlshortner-db-secret
         env:
-        - name: POSTGRES_DB
-          value: url_shortener_db
-        - name: POSTGRES_USER
-          value: user
-        - name: POSTGRES_PASSWORD
-          value: mysecretpassword
+          - valueFrom:
+              configMapKeyRef:
+                name: urlshortner-db-config
+                key: POSTGRES_DATABASE
+            name: POSTGRES_DB

@@ -4,3 +4,4 @@ RUN mkdir /webapp
 WORKDIR /webapp
 COPY src/* ./
 RUN chown nginx:nginx -R ./
+EXPOSE 80

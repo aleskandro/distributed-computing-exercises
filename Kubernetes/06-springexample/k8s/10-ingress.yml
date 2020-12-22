@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: spring-ingress
@@ -11,16 +11,22 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: "/$2" # Note1 at the end of the file
 spec:
   rules:
-  - host: springexample.localhost
+  - host: springexample.minikube.unict.it
     http:
       paths:
       - path: /users(/|$)(.*) # Note1 at the end of the file
+        pathType: ImplementationSpecific
         backend:
-          serviceName: user-service
-          servicePort: 8080
+          service:
+            name: user-service
+            port:
+              number: 8080
       - path: /orders(/|$)(.*) # Note1 at the end of the file
+        pathType: ImplementationSpecific
         backend:
-          serviceName: order-service
-          servicePort: 8080
+          service:
+            name: order-service
+            port:
+              number: 8080
 
 # Note1:  See https://kubernetes.github.io/ingress-nginx/examples/rewrite/

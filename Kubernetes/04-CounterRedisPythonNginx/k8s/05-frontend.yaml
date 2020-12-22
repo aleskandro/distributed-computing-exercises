@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pycounter-frontend
+spec:
+  selector:
+    matchLabels:
+      app: pycounter-frontend
+  template:
+    metadata:
+      labels:
+        app: pycounter-frontend
+    spec:
+      containers:
+        - name: pycounter-frontend
+          image: pycounter-frontend:v1
+          ports:
+            - containerPort: 80

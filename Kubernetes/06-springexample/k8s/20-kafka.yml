@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafkaa
+spec:
+  selector:
+    matchLabels:
+      app: kafkaa
+  serviceName: "kafkaa"
+  replicas: 1
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      labels:
+        app: kafkaa # has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: kafkaa
+        image: wurstmeister/kafka:2.11-2.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9092
+          name: plaintext
+        - containerPort: 9999
+          name: jmx
+        envFrom:
+          - configMapRef:
+              name: kafka-conf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: zookeeper
+  name: zookeeper
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+          app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+      - image: library/zookeeper:3.4.13
+        imagePullPolicy: IfNotPresent
+        name: zookeeper
+        ports:
+        - containerPort: 2181
+        envFrom:
+          - configMapRef:
+              name: zoo-config

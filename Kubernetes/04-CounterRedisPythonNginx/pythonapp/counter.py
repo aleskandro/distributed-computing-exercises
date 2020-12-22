@@ -18,6 +18,7 @@ def count():
     strret += "Count is %s" % redis.get('counter').decode("utf-8")
     return strret
 
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
 

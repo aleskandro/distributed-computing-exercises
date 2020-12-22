@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pycounter-backend
+spec:
+  ports:
+    - port: 5000
+  selector:
+    app: pycounter-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pycounter-redis
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: pycounter-redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pycounter-frontend
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: pycounter-frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-db
+spec:
+  ports:
+    - port: 27017
+  selector:
+    app: user-service-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: user-service

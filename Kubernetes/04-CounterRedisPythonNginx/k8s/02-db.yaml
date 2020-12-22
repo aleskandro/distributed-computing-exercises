@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pycounter-redis
+spec:
+  selector:
+    matchLabels:
+      app: pycounter-redis
+  template:
+    metadata:
+      labels:
+        app: pycounter-redis
+    spec:
+      containers:
+        - name: pycounter-redis
+          image: pycounter-redis:v1
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: redis-volume
+      volumes:
+        - name: redis-volume
+          persistentVolumeClaim:
+            claimName: pycounter-redis-volume

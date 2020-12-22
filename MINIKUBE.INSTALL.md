@@ -11,7 +11,7 @@
 ## Install KVM2 (Fedora 30)
 
 ```
-# dnf install libvirt-daemon-kvm qemu-kvm kuberenetes bridge-utils libvirt virt-install
+# dnf install libvirt-daemon-kvm qemu-kvm kubernetes bridge-utils libvirt virt-install
 $ sudo usermod -a -G libvirt $(whoami)
 ```
 
