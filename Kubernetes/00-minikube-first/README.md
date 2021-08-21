@@ -2,6 +2,10 @@ Start/Create the minikube VM
 
 ```minikube start --memory=4096 --vm-driver=kvm2```
 
+Set docker environment variables
+
+```eval $(minikube docker-env)```
+
 Create the server.js
 
 Create the dockerfile
