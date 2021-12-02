@@ -5,6 +5,7 @@ services:
     restart: on-failure:5
     environment:
       MYSQL_ROOT_PASSWORD: myc00lp@ssw0rd
+      MYSQL_DATABASE: mydb
     volumes:
         - mariadb:/var/lib/mysql
 
@@ -16,12 +17,15 @@ services:
       - 8080:80
     restart: on-failure:5
     environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: root
       WORDPRESS_DB_PASSWORD: myc00lp@ssw0rd
+      WORDPRESS_DB_NAME: mydb
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     ports:
-      - 8082:80
+      - 127.0.0.1:8082:80
     environment:
       PMA_USER: root
       PMA_PASSWORD: myc00lp@ssw0rd
