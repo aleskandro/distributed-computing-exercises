@@ -1,0 +1,38 @@
+version: '3.8'
+
+x-mongo-secrets: &mongo-credentials
+  MONGO_USER: &mongo-user root
+  MONGO_PASS: &mongo-pass toor
+  MONGO_AUTH_DB: admin
+  MONGO_HOST: mongo
+  MONGO_PORT: 27017
+  MONGO_DB_NAME: bookdb
+
+x-common-settings: &common-settings
+  restart: on-failure
+
+services:
+  mongo:
+    <<: *common-settings
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: *mongo-user
+      MONGO_INITDB_ROOT_PASSWORD: *mongo-pass
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-db-data:/data/db
+
+  book-manager:
+    <<: *common-settings
+    build:
+      context: ./java-microservices
+      dockerfile: ./base.Dockerfile
+    environment: *mongo-credentials
+    ports:
+      - 8080:8080
+    volumes:
+      - ../book_manager/:/code
+
+volumes:
+  mongo-db-data:
