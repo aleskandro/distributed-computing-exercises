@@ -32,7 +32,8 @@ public class BookController {
     }
 
     public boolean exists(String id) {
-        return repository.existsById(new ObjectId(id)).block();
+        Boolean exist = repository.existsById(new ObjectId(id)).block();
+        return exist;
     }
 
     @DeleteMapping("/{id}")

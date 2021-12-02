@@ -2,6 +2,9 @@ version: '3'
 services:
     springbook:
         image: springbook:v1
+        build:
+          context: ../springbook
+          dockerfile: ./dev.Dockerfile
         restart: always
         links:
             - mongo
