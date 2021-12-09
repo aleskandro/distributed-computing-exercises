@@ -1,6 +1,9 @@
 Start the minikube VM
 
-```minikube start --vm-driver=kvm2```
+```
+minikube start --vm-driver=kvm2
+eval $(minikube docker-env)
+```
 
 Create the server.js
 
