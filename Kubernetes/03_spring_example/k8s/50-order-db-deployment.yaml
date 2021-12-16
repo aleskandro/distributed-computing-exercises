@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-db
+spec:
+  selector:
+    matchLabels:
+      app: order-service-db
+  template:
+    metadata:
+      labels:
+        app: order-service-db
+    spec:
+      containers:
+        - name: order-service-db
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          envFrom:
+            - configMapRef:
+                name: order-service-db-env-file
+            - secretRef:
+                name: order-service-db-secret-file
+          volumeMounts:
+            - mountPath: /data/db
+              name: order-service-db-volume
+      volumes:
+        - name: order-service-db-volume
+          hostPath:
+            path: /order-service-db-volume
+            type: DirectoryOrCreate

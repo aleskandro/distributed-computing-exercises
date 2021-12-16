@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service-db
+spec:
+  ports:
+    - port: 27017
+  selector:
+    app: order-service-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: order-service
+

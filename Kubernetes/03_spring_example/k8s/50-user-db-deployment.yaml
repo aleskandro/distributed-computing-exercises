@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-db
+spec:
+  selector:
+    matchLabels:
+      app: user-service-db
+  template:
+    metadata:
+      labels:
+        app: user-service-db
+    spec:
+      containers:
+        - name: user-service-db
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          envFrom:
+            - configMapRef:
+                name: user-service-db-env-file
+            - secretRef:
+                name: user-service-db-secret-file
+          volumeMounts:
+            - mountPath: /data/db
+              name: user-service-db-volume
+      volumes:
+        - name: user-service-db-volume
+          hostPath:
+            path: /user-service-db-volume
+            type: DirectoryOrCreate
